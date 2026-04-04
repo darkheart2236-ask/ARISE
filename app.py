@@ -1,31 +1,25 @@
-import streamlit as st
-from groq import Groq
-import google.generativeai as genai
+from flask import Flask, render_template, request, jsonify
+import os
 
-# Corrected Page Config (No repeated arguments)
-st.set_page_config(
-    page_title="ARISE AI", 
-    page_icon="✨", 
-    layout="wide"
-)
+app = Flask(__name__)
 
-# Elite Styling: Black Chancery Bold Italic & Times Roman
-st.markdown("""
-    <style>
-    @import url('https://fonts.cdnfonts.com/css/black-chancery');
+# Store chat history
+chat_history = []
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_message = request.json['message']
     
-    .arise-title {
-        font-family: 'Black Chancery', cursive;
-        font-size: 6rem; font-weight: bold; font-style: italic;
-        text-align: center; color: #5E767E; text-transform: uppercase;
-        margin-top: -70px;
-    }
-    html, body, [class*="st-"], .stMarkdown, p {
-        font-family: "Times New Roman", Times, serif !important;
-    }
-    [data-testid="stSidebar"] { background-color: #1e1f20; }
-    </style>
-    """, unsafe_allow_html=True)
+    # Simple AI response (replace with your AI backend)
+    ai_response = f"Echo: {user_message}"
+    
+    chat_history.append({'user': user_message, 'ai': ai_response})
+    
+    return jsonify({'response': ai_response})
 
-st.markdown("<div class='arise-title'>ARISE</div>", unsafe_allow_html=True)
-# ... rest of your logic ...
+if __name__ == '__main__':
+    app.run(debug=True)
